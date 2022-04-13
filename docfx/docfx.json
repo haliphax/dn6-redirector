@@ -4,7 +4,7 @@
       "src": [
         {
           "files": [
-            "**.csproj"
+            "*.sln"
           ],
 					"cwd": ".."
         }
@@ -21,10 +21,16 @@
     "content": [
       {
         "files": [
-          "**.yml",
-          "**.md"
+          "api/**.yml",
+          "api/index.md"
         ]
-      }
+      },
+			{
+				"files": [
+					"toc.yml",
+					"*.md"
+				]
+			}
     ],
     "resource": [
       {
@@ -38,10 +44,9 @@
         "files": [
           "apidoc/**.md"
         ],
-        "exclude": [
-          "**/bin/**",
-          "**/obj/**"
-        ]
+				"exclude": [
+					"obj/**"
+				]
       }
     ],
     "dest": "../docs",

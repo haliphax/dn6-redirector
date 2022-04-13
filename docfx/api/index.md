@@ -1,4 +1,4 @@
 # API
 
-- [Todd.Redirector](Todd.Redirector.html)
-- [Todd.DemoAPI](Todd.DemoAPI.html)
+The Redirector API encompasses both a Middleware component and a RESTful API
+service.
