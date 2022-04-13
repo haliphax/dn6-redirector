@@ -3,6 +3,9 @@ namespace Todd.DemoAPI;
 using Microsoft.AspNetCore.Mvc;
 using Todd.Redirector;
 
+/// <summary>
+/// Manages the <see cref="Redirect" /> list
+/// </summary>
 [ApiController]
 [Route("[controller]")]
 public class RedirectsController : ControllerBase
@@ -36,6 +39,12 @@ public class RedirectsController : ControllerBase
         logger = log;
     }
 
+    /// <summary>
+    /// Retrieve <see cref="Redirect" /> list
+    /// </summary>
+    /// <returns>
+    /// A list of <see cref="Redirect" /> objects
+    /// </returns>
     [HttpGet]
     public ActionResult Get()
     {

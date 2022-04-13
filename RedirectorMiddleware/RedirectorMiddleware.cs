@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// Middleware which matches each request against a redirect map and, if a
+/// match is found, takes appropriate action to redirect the visitor
+/// </summary>
 public class RedirectorMiddleware
 {
   private readonly IConfiguration configuration;
@@ -32,13 +36,13 @@ public class RedirectorMiddleware
 
     uint timerDelay = Constants.DefaultApiRefreshDelay;
     var timerDelayConfig =
-	    config.GetSection($"{Constants.ConfigNamespace}:RefreshDelay").Value;
+	    config.GetSection($"{Constants.ConfigSection}:RefreshDelay").Value;
 
     if (!string.IsNullOrEmpty(timerDelayConfig?.Trim())
 	    && !uint.TryParse(timerDelayConfig, out timerDelay))
     {
       throw new InvalidCastException(
-				$"Unable to parse {Constants.ConfigNamespace}:RefreshDelay value");
+				$"Unable to parse {Constants.ConfigSection}:RefreshDelay value");
     }
 
     refreshTimer = new Timer(_ => { RefreshData(); }, null, 0, timerDelay);

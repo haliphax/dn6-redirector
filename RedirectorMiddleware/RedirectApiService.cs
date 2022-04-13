@@ -3,6 +3,9 @@ namespace Todd.Redirector;
 using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 
+/// <summary>
+/// Service for retrieving <see cref="Redirect" /> list from REST API
+/// </summary>
 public class RedirectApiService : IRedirectApiService
 {
 	private readonly HttpClient httpClient;
@@ -14,7 +17,7 @@ public class RedirectApiService : IRedirectApiService
 	{
 		httpClient = new HttpClient();
 		httpClient.BaseAddress = new Uri(
-			config.GetSection($"{Constants.ConfigNamespace}:ApiBaseUrl").Value);
+			config.GetSection($"{Constants.ConfigSection}:ApiBaseUrl").Value);
 	}
 
 	public RedirectApiService(HttpClient client)
@@ -22,6 +25,9 @@ public class RedirectApiService : IRedirectApiService
 		httpClient = client;
 	}
 
+	/// <summary>
+	/// <see cref="IRedirectAPIservice.CachedRedirects" />
+	/// </summary>
 	public IEnumerable<Redirect> CachedRedirects()
 	{
 		// lock while retrieving redirects for thread safety
@@ -31,6 +37,9 @@ public class RedirectApiService : IRedirectApiService
 		}
 	}
 
+	/// <summary>
+	/// <see cref="IRedirectAPIservice.GetRedirects" />
+	/// </summary>
 	public IEnumerable<Redirect> GetRedirects()
 	{
 		var response = httpClient.GetAsync("redirects");
