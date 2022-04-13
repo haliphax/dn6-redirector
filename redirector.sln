@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoAPI", "DemoAPI\DemoAPI.csproj", "{8BF5174F-9647-4F28-816C-969AFD98D489}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoSite", "DemoSite\DemoSite.csproj", "{2160B680-C9C7-480B-82CA-CC0D8627DD48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedirectorMiddleware", "RedirectorMiddleware\RedirectorMiddleware.csproj", "{2367E279-80F7-4A52-971E-00BFD64222BC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8BF5174F-9647-4F28-816C-969AFD98D489}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BF5174F-9647-4F28-816C-969AFD98D489}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BF5174F-9647-4F28-816C-969AFD98D489}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BF5174F-9647-4F28-816C-969AFD98D489}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2160B680-C9C7-480B-82CA-CC0D8627DD48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2160B680-C9C7-480B-82CA-CC0D8627DD48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2160B680-C9C7-480B-82CA-CC0D8627DD48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2160B680-C9C7-480B-82CA-CC0D8627DD48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2367E279-80F7-4A52-971E-00BFD64222BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2367E279-80F7-4A52-971E-00BFD64222BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2367E279-80F7-4A52-971E-00BFD64222BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2367E279-80F7-4A52-971E-00BFD64222BC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
