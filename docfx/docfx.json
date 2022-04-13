@@ -3,31 +3,26 @@
     {
       "src": [
         {
-          "src": "../",
           "files": [
             "**.csproj"
-          ]
+          ],
+					"cwd": ".."
         }
       ],
       "dest": "api",
       "disableGitFeatures": false,
-      "disableDefaultFilter": false
-    }
+      "disableDefaultFilter": false,
+			"properties": {
+				"TargetFramework": "net6.0"
+			}
+		}
   ],
   "build": {
     "content": [
       {
         "files": [
-          "api/**.yml",
-          "api/*.md"
-        ]
-      },
-      {
-        "files": [
-          "articles/**.md",
-          "articles/**/toc.yml",
-          "*.yml",
-          "*.md"
+          "**.yml",
+          "**.md"
         ]
       }
     ],
@@ -45,8 +40,7 @@
         ],
         "exclude": [
           "**/bin/**",
-          "**/obj/**",
-          "**/_site/**"
+          "**/obj/**"
         ]
       }
     ],
@@ -64,4 +58,3 @@
     "disableGitFeatures": false
   }
 }
-

@@ -98,4 +98,4 @@ intentional intermittent failure chance of 20% for every API service call in
 order to exhibit fault tolerance.
 
 
-[class documentation]: https://haliphax.github.io/dn6-redirector/api/Todd.Redirector.html
+[class documentation]: https://haliphax.github.io/dn6-redirector
