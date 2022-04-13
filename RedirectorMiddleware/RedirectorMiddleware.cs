@@ -58,6 +58,7 @@ public class RedirectorMiddleware
       return;
     }
 
+    // lock while building absolute/relative lists for thread safety
     lock (dataLock)
     {
       absoluteRedirects.Clear();
