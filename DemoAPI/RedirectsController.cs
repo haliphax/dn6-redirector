@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Todd.Redirector;
 
 /// <summary>
-/// Manages the <see cref="Redirect" /> list
+/// RESTful service endpoint that manages the <see cref="Redirect" /> list
 /// </summary>
 [ApiController]
 [Route("[controller]")]

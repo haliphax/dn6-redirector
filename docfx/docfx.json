@@ -4,7 +4,7 @@
       "src": [
         {
           "files": [
-            "*.sln"
+            "RedirectorMiddleware/RedirectorMiddleware.csproj"
           ],
 					"cwd": ".."
         }
@@ -21,8 +21,7 @@
     "content": [
       {
         "files": [
-          "api/**.yml",
-          "api/index.md"
+          "api/**.yml"
         ]
       },
 			{
