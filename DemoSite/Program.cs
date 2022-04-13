@@ -25,7 +25,7 @@ app.MapGet("/", () => {
 			r =>
 			{
 				var rel = r.useRelative ? " relative" : "";
-				return $"{r.targetUrl} => {r.redirectUrl} ({r.redirectType}){rel}";
+				return $"{r.redirectUrl} => {r.targetUrl} ({r.redirectType}){rel}";
 			}));
 });
 
