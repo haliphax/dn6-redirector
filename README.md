@@ -25,6 +25,15 @@ dotnet run --project DemoSite
 
 Finally, visit the demonstration endpoint at http://localhost:5000.
 
+Some quick test URLs:
+
+- http://localhost:5000/campaignA
+  *(to demonstrate absolute redirection)*
+- http://localhost:5000/CAMPAiGnB
+  *(to demonstrate URL normalization)*
+- http://localhost:5000/product-directory/hammer/sledge
+  *(to demonstrate relative redirection)*
+
 ## Configuration
 
 The Middleware deals with two configuration values in `appsettings.json`:
