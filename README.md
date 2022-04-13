@@ -9,6 +9,8 @@ The `lock` flow control is used for thread safety when reading from or assiging
 to the redirect map. A copy of the redirect map is available upon request by
 invoking the `CachedRedirects()` method of the `IRedirectApiService` singleton.
 
+Barebones [class documentation] is available.
+
 ## Run the demo
 
 First, start the demo API application:
@@ -94,3 +96,6 @@ app.UseMiddleware<RedirectorMiddleware>();
 This solution is presented for demonstration purposes only. There is an
 intentional intermittent failure chance of 20% for every API service call in
 order to exhibit fault tolerance.
+
+
+[class documentation]: https://haliphax.github.io/dn6-redirector/api/Todd.Redirector.html
