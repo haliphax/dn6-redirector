@@ -1,4 +1,4 @@
-namespace Todd.RedirectAPI;
+namespace Todd.DemoAPI;
 
 using Microsoft.AspNetCore.Mvc;
 using Todd.Redirector;

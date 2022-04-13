@@ -1,7 +1,7 @@
-namespace Todd.Middleware.Redirector;
+namespace Todd.Redirector;
 
+using Microsoft.Extensions.Configuration;
 using System.Text.Json;
-using Todd.Redirector;
 
 public class RedirectApiService : IRedirectApiService
 {
@@ -10,6 +10,13 @@ public class RedirectApiService : IRedirectApiService
 
 	private Redirect[]? redirects;
 
+	public RedirectApiService(IConfiguration config)
+	{
+		httpClient = new HttpClient();
+		httpClient.BaseAddress = new Uri(
+			config.GetSection($"{Constants.ConfigNamespace}:ApiBaseUrl").Value);
+	}
+
 	public RedirectApiService(HttpClient client)
 	{
 		httpClient = client;
@@ -17,6 +24,7 @@ public class RedirectApiService : IRedirectApiService
 
 	public IEnumerable<Redirect> CachedRedirects()
 	{
+		// lock while retrieving redirects for thread safety
 		lock (dataLock)
 		{
 			return redirects ?? new Redirect[] { };
@@ -37,10 +45,12 @@ public class RedirectApiService : IRedirectApiService
 		var read = response.Result.Content.ReadAsStringAsync();
 		read.Wait();
 
+		// lock while assigning redirects for thread safety
 		lock (dataLock)
 		{
-			redirects = JsonSerializer.Deserialize<Redirect[]>(read.Result);
-			return redirects ?? new Redirect[] { };
+			redirects = JsonSerializer.Deserialize<Redirect[]>(read.Result)
+				?? new Redirect[] { };
+			return redirects;
 		}
 	}
 }

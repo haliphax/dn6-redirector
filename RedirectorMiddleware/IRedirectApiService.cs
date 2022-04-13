@@ -1,6 +1,4 @@
-namespace Todd.Middleware.Redirector;
-
-using Todd.Redirector;
+namespace Todd.Redirector;
 
 public interface IRedirectApiService
 {

@@ -1,31 +1,13 @@
-﻿using Todd.Middleware.Redirector;
-using Todd.Redirector;
+﻿using Todd.Redirector;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Services.AddControllers();
-
-var client = new HttpClient();
-
-try
-{
-	client.BaseAddress = new Uri(
-		builder.Configuration.GetValue<string>(
-			$"{Todd.Site.Constants.ConfigNamespace}:ApiBaseUrl"));
-}
-catch(Exception ex) {
-	Console.WriteLine(
-		$"Error configuring Redirects API client: {ex.Message}");
-	Environment.ExitCode = 1;
-	return;
-}
-
-var apiService = new RedirectApiService(client);
-builder.Services.AddSingleton<IRedirectApiService>(apiService);
+builder.Services.AddSingleton<IRedirectApiService>(
+	new RedirectApiService(builder.Configuration));
 
 var app = builder.Build();
-app.MapControllers();
 app.UseMiddleware<RedirectorMiddleware>();
 
 // demo endpoint for displaying cached redirects from service

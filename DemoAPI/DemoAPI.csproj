@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RedirectorCommon\RedirectorCommon.csproj" />
+    <ProjectReference Include="..\RedirectorMiddleware\RedirectorMiddleware.csproj" />
   </ItemGroup>
 
 </Project>
