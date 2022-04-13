@@ -41,7 +41,7 @@ public class RedirectorMiddleware
 				$"Unable to parse {Constants.ConfigNamespace}:RefreshDelay value");
     }
 
-    refreshTimer = new Timer((_) => { RefreshData(); }, null, 0, timerDelay);
+    refreshTimer = new Timer(_ => { RefreshData(); }, null, 0, timerDelay);
   }
 
   private void RefreshData()
