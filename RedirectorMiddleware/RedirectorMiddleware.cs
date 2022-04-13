@@ -65,13 +65,15 @@ public class RedirectorMiddleware
 
       foreach (var redirect in redirects)
       {
+				var key = redirect.redirectUrl.ToLower();
+
 				if (redirect.useRelative)
 				{
-					relativeRedirects.Add(redirect.redirectUrl, redirect);
+					relativeRedirects.Add(key, redirect);
 				}
 				else
 				{
-					absoluteRedirects.Add(redirect.redirectUrl, redirect);
+					absoluteRedirects.Add(key, redirect);
 				}
       }
     }
@@ -91,20 +93,21 @@ public class RedirectorMiddleware
       relatives = new Dictionary<string, Redirect>(relativeRedirects);
     }
 
+    var lowerUrl = new PathString(context.Request.Path.ToString().ToLower());
     Redirect redirect;
 		string targetUrl;
 
     // first check for absolute redirect match
-    if (absolutes.ContainsKey(context.Request.Path))
+    if (absolutes.ContainsKey(lowerUrl))
     {
-      redirect = absolutes[context.Request.Path];
+      redirect = absolutes[lowerUrl];
 			targetUrl = redirect.targetUrl;
     }
     else
     {
       // no matching absolute redirect found; check relative redirects
       redirect = relativeRedirects
-	      .FirstOrDefault(x => context.Request.Path.StartsWithSegments(x.Key))
+	      .FirstOrDefault(x => lowerUrl.StartsWithSegments(x.Key))
 	      .Value;
 
       // no redirect found; proceed with next middleware
