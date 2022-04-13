@@ -42,7 +42,7 @@ The Middleware deals with two configuration values in `appsettings.json`:
 - `Todd.Redirector:RefreshDelay` The time (in milliseconds) between calls to
   refresh the redirect map from the API
 
-The refresh delay may be ommitted, and will default to 5 seconds for
+The refresh delay may be ommitted, and will default to 10 seconds for
 demonstration purposes. The base URL of the API web application is required if
 you are using the `IConfiguration` constructor for the `IRedirectApiService`
 singleton. If you use the `HttpClient` constructor, it is assumed that the
