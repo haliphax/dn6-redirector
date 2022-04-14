@@ -14,10 +14,8 @@ public class RedirectorMiddleware
   private readonly ILogger logger;
   private readonly IRedirectApiService apiService;
   private readonly RequestDelegate nextMiddleware;
-  private readonly object dataLock = new object();
 
-  private Dictionary<string, Redirect> relativeRedirects;
-  private Dictionary<string, Redirect> absoluteRedirects;
+  private RedirectMap redirectMap;
   private Timer refreshTimer;
 
   public RedirectorMiddleware(
@@ -31,8 +29,7 @@ public class RedirectorMiddleware
     apiService = api;
     nextMiddleware = next;
 
-    absoluteRedirects = new Dictionary<string, Redirect>();
-    relativeRedirects = new Dictionary<string, Redirect>();
+    redirectMap = new RedirectMap();
 
     uint timerDelay = Constants.DefaultApiRefreshDelay;
     var timerDelayConfig =
@@ -50,11 +47,9 @@ public class RedirectorMiddleware
 
   private void RefreshData()
   {
-    IEnumerable<Redirect> redirects;
-
     try
     {
-      redirects = apiService.GetRedirects();
+      redirectMap = apiService.GetRedirects();
     }
     catch (Exception ex)
     {
@@ -62,58 +57,39 @@ public class RedirectorMiddleware
       return;
     }
 
-    // lock while building absolute/relative lists for thread safety
-    lock (dataLock)
-    {
-      absoluteRedirects.Clear();
-      relativeRedirects.Clear();
-
-      foreach (var redirect in redirects)
-      {
-				var key = redirect.redirectUrl.ToLower();
-
-				if (redirect.useRelative)
-				{
-					relativeRedirects.Add(key, redirect);
-				}
-				else
-				{
-					absoluteRedirects.Add(key, redirect);
-				}
-      }
-    }
-
     logger.LogInformation("Data refreshed");
   }
 
   public async Task InvokeAsync(HttpContext context)
   {
-    Dictionary<string, Redirect> absolutes;
-    Dictionary<string, Redirect> relatives;
-
-    // lock while reading current redirects for thread safety
-    lock (dataLock)
-    {
-      absolutes = new Dictionary<string, Redirect>(absoluteRedirects);
-      relatives = new Dictionary<string, Redirect>(relativeRedirects);
-    }
-
     var lowerUrl = new PathString(context.Request.Path.ToString().ToLower());
-    Redirect redirect;
+    Redirect? redirect = null;
 		string targetUrl;
 
     // first check for absolute redirect match
-    if (absolutes.ContainsKey(lowerUrl))
+    if (redirectMap.AbsoluteRedirects.ContainsKey(lowerUrl))
     {
-      redirect = absolutes[lowerUrl];
+      redirect = redirectMap.AbsoluteRedirects[lowerUrl];
 			targetUrl = redirect.targetUrl;
     }
     else
     {
       // no matching absolute redirect found; check relative redirects
-      redirect = relativeRedirects
-	      .FirstOrDefault(x => lowerUrl.StartsWithSegments(x.Key))
-	      .Value;
+      // by building up a potential key one URL segment at a time and checking
+      // for its existence in the dictionary
+      var segments = lowerUrl.ToString().Split('/');
+      var key = new System.Text.StringBuilder();
+
+      for (var i = 0; i < segments.Length; i++)
+			{
+				key.Append($"/{segments[i]}");
+
+				if (redirectMap.RelativeRedirects
+					.TryGetValue(key.ToString(), out redirect))
+				{
+					break;
+				}
+      }
 
       // no redirect found; proceed with next middleware
       if (redirect == null)

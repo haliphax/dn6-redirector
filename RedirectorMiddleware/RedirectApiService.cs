@@ -9,13 +9,17 @@ using System.Text.Json;
 public class RedirectApiService : IRedirectApiService
 {
 	private readonly HttpClient httpClient;
-	private readonly object dataLock = new object();
+  private readonly object dataLock = new object();
 
-	private Redirect[]? redirects;
+  private RedirectMap redirectMap = new RedirectMap
+  {
+    AbsoluteRedirects = new Dictionary<string, Redirect>(),
+    RelativeRedirects = new Dictionary<string, Redirect>(),
+  };
 
-	public RedirectApiService(IConfiguration config)
+  public RedirectApiService(IConfiguration config)
 	{
-		httpClient = new HttpClient();
+    httpClient = new HttpClient();
 		httpClient.BaseAddress = new Uri(
 			config.GetSection($"{Constants.ConfigSection}:ApiBaseUrl").Value);
 	}
@@ -28,19 +32,28 @@ public class RedirectApiService : IRedirectApiService
 	/// <summary>
 	/// <see cref="IRedirectAPIservice.CachedRedirects" />
 	/// </summary>
-	public IEnumerable<Redirect> CachedRedirects()
+	public RedirectMap CachedRedirects
 	{
-		// lock while retrieving redirects for thread safety
-		lock (dataLock)
+		get
 		{
-			return redirects ?? new Redirect[] { };
-		}
+			// lock while providing copy of redirects for thread safety
+      lock (dataLock)
+      {
+				return new RedirectMap
+				{
+					AbsoluteRedirects =
+						new Dictionary<string, Redirect>(redirectMap.AbsoluteRedirects),
+					RelativeRedirects =
+						new Dictionary<string, Redirect>(redirectMap.RelativeRedirects),
+				};
+      }
+    }
 	}
 
 	/// <summary>
 	/// <see cref="IRedirectAPIservice.GetRedirects" />
 	/// </summary>
-	public IEnumerable<Redirect> GetRedirects()
+	public RedirectMap GetRedirects()
 	{
 		var response = httpClient.GetAsync("redirects");
 		response.Wait();
@@ -54,12 +67,30 @@ public class RedirectApiService : IRedirectApiService
 		var read = response.Result.Content.ReadAsStringAsync();
 		read.Wait();
 
+    redirectMap.AbsoluteRedirects.Clear();
+    redirectMap.RelativeRedirects.Clear();
+
+		var redirects = JsonSerializer.Deserialize<Redirect[]>(read.Result)
+			?? new Redirect[] { };
+
 		// lock while assigning redirects for thread safety
 		lock (dataLock)
 		{
-			redirects = JsonSerializer.Deserialize<Redirect[]>(read.Result)
-				?? new Redirect[] { };
-			return redirects;
-		}
-	}
+			foreach (var redirect in redirects)
+			{
+				var key = redirect.redirectUrl.ToLower();
+
+				if (redirect.useRelative)
+				{
+					redirectMap.RelativeRedirects.Add(key, redirect);
+				}
+				else
+				{
+					redirectMap.AbsoluteRedirects.Add(key, redirect);
+				}
+			}
+
+			return redirectMap;
+    }
+  }
 }

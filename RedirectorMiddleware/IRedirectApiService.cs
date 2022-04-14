@@ -11,13 +11,13 @@ public interface IRedirectApiService
 	/// <returns>
 	/// A list of <see cref="Redirect" /> objects
 	/// </returns>
-	public IEnumerable<Redirect> CachedRedirects();
-	/// <summary>
-	/// Pull a new redirect map from the REST API
-	/// </summary>
-	/// <returns>
-	/// A list of <see cref="Redirect" /> objects
-	/// </returns>
-	/// <exception cref="HttpRequestException"></exception>
-	public IEnumerable<Redirect> GetRedirects();
+	public RedirectMap CachedRedirects { get; }
+  /// <summary>
+  /// Pull a new redirect map from the REST API
+  /// </summary>
+  /// <returns>
+  /// A list of <see cref="Redirect" /> objects
+  /// </returns>
+  /// <exception cref="HttpRequestException"></exception>
+  public RedirectMap GetRedirects();
 }
