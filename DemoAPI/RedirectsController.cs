@@ -11,7 +11,7 @@ using Todd.Redirector;
 public class RedirectsController : ControllerBase
 {
 	  // mock data
-    private static readonly Redirect[] Redirects = new Redirect[] {
+    private static readonly IEnumerable<Redirect> Redirects = new Redirect[] {
 			new Redirect {
 				RedirectUrl = "/campaignA",
 				TargetUrl = "/campaigns/targetcampaign",
@@ -46,13 +46,13 @@ public class RedirectsController : ControllerBase
     /// A list of <see cref="Redirect" /> objects
     /// </returns>
     [HttpGet]
-    public ActionResult Get()
+    public ActionResult<IEnumerable<Redirect>> Get()
     {
 			// 20% chance of failure
-			if (Random.Shared.Next(0, 9) < 2) {
-				logger.LogError("Intermittent failure");
-				return Problem();
-			}
+			// if (Random.Shared.Next(0, 9) < 2) {
+			// 	logger.LogError("Intermittent failure");
+			// 	return Problem();
+			// }
 
 			return Ok(Redirects);
     }

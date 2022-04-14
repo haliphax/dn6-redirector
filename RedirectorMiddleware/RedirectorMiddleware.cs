@@ -67,12 +67,13 @@ public class RedirectorMiddleware
 		string targetUrl;
 
     // first check for absolute redirect match
-    if (redirectMap.AbsoluteRedirects.ContainsKey(lowerUrl))
+    if (redirectMap.AbsoluteRedirects != null
+			&& redirectMap.AbsoluteRedirects.ContainsKey(lowerUrl))
     {
       redirect = redirectMap.AbsoluteRedirects[lowerUrl];
 			targetUrl = redirect.TargetUrl;
     }
-    else
+    else if (redirectMap.RelativeRedirects != null)
     {
       // no matching absolute redirect found; check relative redirects
       // by building up a potential key one URL segment at a time and checking
@@ -80,7 +81,8 @@ public class RedirectorMiddleware
       var segments = lowerUrl.ToString().Split('/');
       var key = new System.Text.StringBuilder();
 
-      for (var i = 0; i < segments.Length; i++)
+      // first URL segment is always "/", so skip it
+      for (var i = 1; i < segments.Length; i++)
 			{
 				key.Append($"/{segments[i]}");
 
@@ -101,6 +103,11 @@ public class RedirectorMiddleware
 			// relative URLs should include trailing path when redirecting
       targetUrl = redirect.TargetUrl
 	      + context.Request.Path.Value?.Substring(redirect.RedirectUrl.Length);
+    }
+		else
+		{
+      await nextMiddleware(context);
+      return;
     }
 
     var permanent = (redirect.RedirectType == 301);
