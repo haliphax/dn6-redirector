@@ -12,8 +12,8 @@ app.UseMiddleware<RedirectorMiddleware>();
 
 string summarize(Redirect r)
 {
-	var rel = r.useRelative ? " relative" : "";
-	return $"{r.redirectUrl} => {r.targetUrl} ({r.redirectType}){rel}";
+	var rel = r.UseRelative ? " relative" : "";
+	return $"{r.RedirectUrl} => {r.TargetUrl} ({r.RedirectType}){rel}";
 }
 
 // demo endpoint for displaying cached redirects from service

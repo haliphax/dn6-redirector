@@ -3,8 +3,8 @@ namespace Todd.Redirector;
 using System.Collections.Concurrent;
 
 /// <summary>
-/// Collection of <see cref="Redirect" /> dictionaries, split between relative
-/// and absolute redirects
+/// Two <see cref="Redirect" /> dictionaries, split between relative and
+/// absolute redirects
 /// </summary>
 public class RedirectMap
 {

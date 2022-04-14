@@ -13,22 +13,22 @@ public class RedirectsController : ControllerBase
 	  // mock data
     private static readonly Redirect[] Redirects = new Redirect[] {
 			new Redirect {
-				redirectUrl = "/campaignA",
-				targetUrl = "/campaigns/targetcampaign",
-				redirectType = 302,
-				useRelative = false,
+				RedirectUrl = "/campaignA",
+				TargetUrl = "/campaigns/targetcampaign",
+				RedirectType = 302,
+				UseRelative = false,
 			},
 			new Redirect {
-				redirectUrl = "/campaignB",
-				targetUrl = "/campaigns/targetcampaign/channelB",
-				redirectType = 302,
-				useRelative = false,
+				RedirectUrl = "/campaignB",
+				TargetUrl = "/campaigns/targetcampaign/channelB",
+				RedirectType = 302,
+				UseRelative = false,
 			},
 			new Redirect {
-				redirectUrl = "/product-directory",
-				targetUrl = "/products",
-				redirectType = 301,
-				useRelative = true,
+				RedirectUrl = "/product-directory",
+				TargetUrl = "/products",
+				RedirectType = 301,
+				UseRelative = true,
 			},
 		};
 

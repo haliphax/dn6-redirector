@@ -4,7 +4,8 @@ using Microsoft.Extensions.Configuration;
 using System.Text.Json;
 
 /// <summary>
-/// Service for retrieving <see cref="Redirect" /> list from REST API
+/// Service for retrieving a list of <see cref="Redirect" /> objects from a
+/// REST API endpoint and producing a <see cref="RedirectMap" />
 /// </summary>
 public class RedirectApiService : IRedirectApiService
 {
@@ -78,9 +79,9 @@ public class RedirectApiService : IRedirectApiService
 		{
 			foreach (var redirect in redirects)
 			{
-				var key = redirect.redirectUrl.ToLower();
+				var key = redirect.RedirectUrl.ToLower();
 
-				if (redirect.useRelative)
+				if (redirect.UseRelative)
 				{
 					redirectMap.RelativeRedirects.Add(key, redirect);
 				}

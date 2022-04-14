@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-/// Middleware which matches each request against a redirect map and, if a
-/// match is found, takes appropriate action to redirect the visitor
+/// Middleware which matches each request against a <see cref="RedirectMap" />
+/// and, if a match is found, takes appropriate action to redirect the visitor
 /// </summary>
 public class RedirectorMiddleware
 {
@@ -70,7 +70,7 @@ public class RedirectorMiddleware
     if (redirectMap.AbsoluteRedirects.ContainsKey(lowerUrl))
     {
       redirect = redirectMap.AbsoluteRedirects[lowerUrl];
-			targetUrl = redirect.targetUrl;
+			targetUrl = redirect.TargetUrl;
     }
     else
     {
@@ -99,13 +99,13 @@ public class RedirectorMiddleware
       }
 
 			// relative URLs should include trailing path when redirecting
-      targetUrl = redirect.targetUrl
-	      + context.Request.Path.Value?.Substring(redirect.redirectUrl.Length);
+      targetUrl = redirect.TargetUrl
+	      + context.Request.Path.Value?.Substring(redirect.RedirectUrl.Length);
     }
 
-    var permanent = (redirect.redirectType == 301);
+    var permanent = (redirect.RedirectType == 301);
     logger.LogInformation(
-	    $"Redirecting {context.Request.Path} to {targetUrl} ({redirect.redirectType})");
+	    $"Redirecting {context.Request.Path} to {targetUrl} ({redirect.RedirectType})");
     context.Response.Redirect(targetUrl, permanent);
   }
 }
