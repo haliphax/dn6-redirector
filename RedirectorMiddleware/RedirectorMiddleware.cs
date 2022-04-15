@@ -15,7 +15,7 @@ public class RedirectorMiddleware
   private readonly IRedirectApiService apiService;
   private readonly RequestDelegate nextMiddleware;
 
-  private RedirectMap redirectMap;
+  private RedirectMap? redirectMap = null;
   private Timer refreshTimer;
 
   public RedirectorMiddleware(
@@ -28,8 +28,6 @@ public class RedirectorMiddleware
     logger = log;
     apiService = api;
     nextMiddleware = next;
-
-    redirectMap = new RedirectMap();
 
     uint timerDelay = Constants.DefaultApiRefreshDelay;
     var timerDelayConfig =
@@ -62,6 +60,12 @@ public class RedirectorMiddleware
 
   public async Task InvokeAsync(HttpContext context)
   {
+		if (redirectMap == null)
+		{
+      await nextMiddleware(context);
+      return;
+    }
+
     var lowerUrl = new PathString(context.Request.Path.ToString().ToLower());
     Redirect? redirect = null;
 		string targetUrl;

@@ -1,6 +1,7 @@
 namespace Todd.Redirector;
 
 using Microsoft.Extensions.Configuration;
+using System.Collections.ObjectModel;
 using System.Text.Json;
 
 /// <summary>
@@ -10,13 +11,8 @@ using System.Text.Json;
 public class RedirectApiService : IRedirectApiService
 {
 	private readonly HttpClient httpClient;
-  private readonly object dataLock = new object();
 
-  private RedirectMap redirectMap = new RedirectMap
-  {
-    AbsoluteRedirects = new Dictionary<string, Redirect>(),
-    RelativeRedirects = new Dictionary<string, Redirect>(),
-  };
+  private RedirectMap? redirectMap;
 
   public RedirectApiService(IConfiguration config)
 	{
@@ -33,28 +29,18 @@ public class RedirectApiService : IRedirectApiService
 	/// <summary>
 	/// <see cref="IRedirectApiService.CachedRedirects" />
 	/// </summary>
-	public RedirectMap CachedRedirects
+	public RedirectMap? CachedRedirects
 	{
 		get
 		{
-			// lock while providing copy of redirects for thread safety
-      lock (dataLock)
-      {
-				return new RedirectMap
-				{
-					AbsoluteRedirects =
-						new Dictionary<string, Redirect>(redirectMap.AbsoluteRedirects),
-					RelativeRedirects =
-						new Dictionary<string, Redirect>(redirectMap.RelativeRedirects),
-				};
-      }
+      return redirectMap;
     }
 	}
 
 	/// <summary>
 	/// <see cref="IRedirectApiService.GetRedirects" />
 	/// </summary>
-	public RedirectMap GetRedirects()
+	public RedirectMap? GetRedirects()
 	{
 		var response = httpClient.GetAsync("redirects");
 		response.Wait();
@@ -68,30 +54,44 @@ public class RedirectApiService : IRedirectApiService
 		var read = response.Result.Content.ReadAsStringAsync();
 		read.Wait();
 
-    redirectMap.AbsoluteRedirects.Clear();
-    redirectMap.RelativeRedirects.Clear();
+    var absolutes = new Dictionary<string, Redirect>();
+    var relatives = new Dictionary<string, Redirect>();
 
 		var redirects = JsonSerializer.Deserialize<Redirect[]>(read.Result)
 			?? new Redirect[] { };
 
-		// lock while assigning redirects for thread safety
-		lock (dataLock)
+		foreach (var redirect in redirects)
 		{
-			foreach (var redirect in redirects)
+			var key = redirect.RedirectUrl.ToLower();
+
+			if (redirect.UseRelative)
 			{
-				var key = redirect.RedirectUrl.ToLower();
-
-				if (redirect.UseRelative)
-				{
-					redirectMap.RelativeRedirects.Add(key, redirect);
-				}
-				else
-				{
-					redirectMap.AbsoluteRedirects.Add(key, redirect);
-				}
+				relatives.Add(key, redirect);
 			}
+			else
+			{
+				absolutes.Add(key, redirect);
+			}
+		}
 
-			return redirectMap;
+		if (redirectMap == null)
+		{
+      redirectMap = new RedirectMap
+      {
+				AbsoluteRedirects =
+					new ReadOnlyDictionary<string, Redirect>(absolutes),
+				RelativeRedirects =
+					new ReadOnlyDictionary<string, Redirect>(relatives),
+			};
     }
+    else
+    {
+      redirectMap.AbsoluteRedirects =
+	      new ReadOnlyDictionary<string, Redirect>(absolutes);
+      redirectMap.RelativeRedirects =
+	      new ReadOnlyDictionary<string, Redirect>(relatives);
+    }
+
+    return redirectMap;
   }
 }
