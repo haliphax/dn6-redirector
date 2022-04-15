@@ -31,7 +31,7 @@ public class RedirectApiService : IRedirectApiService
 	}
 
 	/// <summary>
-	/// <see cref="IRedirectAPIService.CachedRedirects" />
+	/// <see cref="IRedirectApiService.CachedRedirects" />
 	/// </summary>
 	public RedirectMap CachedRedirects
 	{
@@ -52,7 +52,7 @@ public class RedirectApiService : IRedirectApiService
 	}
 
 	/// <summary>
-	/// <see cref="IRedirectAPIService.GetRedirects" />
+	/// <see cref="IRedirectApiService.GetRedirects" />
 	/// </summary>
 	public RedirectMap GetRedirects()
 	{
