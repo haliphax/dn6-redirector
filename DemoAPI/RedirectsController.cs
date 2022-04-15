@@ -49,10 +49,10 @@ public class RedirectsController : ControllerBase
     public ActionResult<IEnumerable<Redirect>> Get()
     {
 			// 20% chance of failure
-			// if (Random.Shared.Next(0, 9) < 2) {
-			// 	logger.LogError("Intermittent failure");
-			// 	return Problem();
-			// }
+			if (Random.Shared.Next(0, 9) < 2) {
+				logger.LogError("Intermittent failure");
+				return Problem();
+			}
 
 			return Ok(Redirects);
     }
