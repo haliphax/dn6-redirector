@@ -12,11 +12,11 @@ public class RedirectApiService : IRedirectApiService
 {
 	private readonly HttpClient httpClient;
 
-  private RedirectMap? redirectMap;
+	private RedirectMap? redirectMap;
 
-  public RedirectApiService(IConfiguration config)
+	public RedirectApiService(IConfiguration config)
 	{
-    httpClient = new HttpClient();
+		httpClient = new HttpClient();
 		httpClient.BaseAddress = new Uri(
 			config.GetSection($"{Constants.ConfigSection}:ApiBaseUrl").Value);
 	}
@@ -27,19 +27,20 @@ public class RedirectApiService : IRedirectApiService
 	}
 
 	/// <summary>
-	/// <see cref="IRedirectApiService.CachedRedirects" />
+	/// See <see cref="IRedirectApiService.CachedRedirects" />
 	/// </summary>
 	public RedirectMap? CachedRedirects
 	{
 		get
 		{
-      return redirectMap;
-    }
+			return redirectMap;
+		}
 	}
 
 	/// <summary>
-	/// <see cref="IRedirectApiService.GetRedirects" />
+	/// See <see cref="IRedirectApiService.GetRedirects" />
 	/// </summary>
+	/// <exception cref="HttpRequestException"></exception>
 	public RedirectMap? GetRedirects()
 	{
 		var response = httpClient.GetAsync("redirects");
@@ -54,8 +55,8 @@ public class RedirectApiService : IRedirectApiService
 		var read = response.Result.Content.ReadAsStringAsync();
 		read.Wait();
 
-    var absolutes = new Dictionary<string, Redirect>();
-    var relatives = new Dictionary<string, Redirect>();
+		var absolutes = new Dictionary<string, Redirect>();
+		var relatives = new Dictionary<string, Redirect>();
 
 		var redirects = JsonSerializer.Deserialize<Redirect[]>(read.Result)
 			?? new Redirect[] { };
@@ -76,22 +77,22 @@ public class RedirectApiService : IRedirectApiService
 
 		if (redirectMap == null)
 		{
-      redirectMap = new RedirectMap
-      {
+			redirectMap = new RedirectMap
+			{
 				AbsoluteRedirects =
 					new ReadOnlyDictionary<string, Redirect>(absolutes),
 				RelativeRedirects =
 					new ReadOnlyDictionary<string, Redirect>(relatives),
 			};
-    }
-    else
-    {
-      redirectMap.AbsoluteRedirects =
-	      new ReadOnlyDictionary<string, Redirect>(absolutes);
-      redirectMap.RelativeRedirects =
-	      new ReadOnlyDictionary<string, Redirect>(relatives);
-    }
+		}
+		else
+		{
+			redirectMap.AbsoluteRedirects =
+				new ReadOnlyDictionary<string, Redirect>(absolutes);
+			redirectMap.RelativeRedirects =
+				new ReadOnlyDictionary<string, Redirect>(relatives);
+		}
 
-    return redirectMap;
-  }
+		return redirectMap;
+	}
 }
