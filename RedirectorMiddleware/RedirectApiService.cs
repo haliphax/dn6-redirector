@@ -12,7 +12,7 @@ public class RedirectApiService : IRedirectApiService
 {
 	private readonly HttpClient httpClient;
 
-	private RedirectMap? redirectMap;
+	private RedirectMap redirectMap = new RedirectMap();
 
 	public RedirectApiService(IConfiguration config)
 	{
@@ -29,7 +29,7 @@ public class RedirectApiService : IRedirectApiService
 	/// <summary>
 	/// See <see cref="IRedirectApiService.CachedRedirects" />
 	/// </summary>
-	public RedirectMap? CachedRedirects
+	public RedirectMap CachedRedirects
 	{
 		get
 		{
@@ -41,7 +41,7 @@ public class RedirectApiService : IRedirectApiService
 	/// See <see cref="IRedirectApiService.GetRedirects" />
 	/// </summary>
 	/// <exception cref="HttpRequestException"></exception>
-	public RedirectMap? GetRedirects()
+	public RedirectMap GetRedirects()
 	{
 		var response = httpClient.GetAsync("redirects");
 		response.Wait();
@@ -75,23 +75,10 @@ public class RedirectApiService : IRedirectApiService
 			}
 		}
 
-		if (redirectMap == null)
-		{
-			redirectMap = new RedirectMap
-			{
-				AbsoluteRedirects =
-					new ReadOnlyDictionary<string, Redirect>(absolutes),
-				RelativeRedirects =
-					new ReadOnlyDictionary<string, Redirect>(relatives),
-			};
-		}
-		else
-		{
-			redirectMap.AbsoluteRedirects =
-				new ReadOnlyDictionary<string, Redirect>(absolutes);
-			redirectMap.RelativeRedirects =
-				new ReadOnlyDictionary<string, Redirect>(relatives);
-		}
+		redirectMap.AbsoluteRedirects =
+			new ReadOnlyDictionary<string, Redirect>(absolutes);
+		redirectMap.RelativeRedirects =
+			new ReadOnlyDictionary<string, Redirect>(relatives);
 
 		return redirectMap;
 	}

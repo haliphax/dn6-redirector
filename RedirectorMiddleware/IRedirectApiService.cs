@@ -11,7 +11,7 @@ public interface IRedirectApiService
 	/// <returns>
 	/// A <see cref="RedirectMap" /> object split by relative/absolute
 	/// </returns>
-	public RedirectMap? CachedRedirects { get; }
+	public RedirectMap CachedRedirects { get; }
   /// <summary>
   /// Pull a new redirect map from the REST API
   /// </summary>
@@ -19,5 +19,5 @@ public interface IRedirectApiService
   /// A <see cref="RedirectMap" /> object split by relative/absolute
   /// </returns>
   /// <exception cref="HttpRequestException"></exception>
-  public RedirectMap? GetRedirects();
+  public RedirectMap GetRedirects();
 }
